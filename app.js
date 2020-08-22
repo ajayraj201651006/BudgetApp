@@ -102,7 +102,8 @@ var UIController = (function () {
         budgetLabel: '.budget__value',
         incomeLabel: '.budget__income--value',
         expensesLabel: '.budget__expenses--value',
-        percentageLabel: '.budget__expenses--percentage'
+        percentageLabel: '.budget__expenses--percentage',
+        containerLabel: '.container'
     }
 
     return {
@@ -119,10 +120,10 @@ var UIController = (function () {
             //create html string with placeholder text
             if (type === 'inc') {
                 element = DOMStrings.incomeContainer;
-                html = '<div class="item clearfix" id="income-%d%"><div class="item__description">%description%</div><div class="right clearfix"> <div class="item__value">%value%</div><div class="item__delete"><button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button> </div> <div></div>'
+                html = '<div class="item clearfix" id="inc-%d%"><div class="item__description">%description%</div><div class="right clearfix"> <div class="item__value">%value%</div><div class="item__delete"><button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button> </div> <div></div>'
             } else if (type === 'exp') {
                 element = DOMStrings.expensesContainer;
-                html = '<div class="item clearfix" id="expense-%d%"><div class="item__description">%description%</div><div class="right clearfix"><div class="item__value">%value%</div><div class="item__percentage">21%</div> <div class="item__delete"><button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button></div> </div></div>'
+                html = '<div class="item clearfix" id="exp-%d%"><div class="item__description">%description%</div><div class="right clearfix"><div class="item__value">%value%</div><div class="item__percentage">21%</div> <div class="item__delete"><button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button></div> </div></div>'
             }
 
             //replace placeholder text with actual values
@@ -179,6 +180,8 @@ var appController = (function (budgetCtrl, UICtrl) {
                 ctrlEvent();
             }
         });
+
+        document.querySelector(DOM.containerLabel).addEventListener('click', ctrlDeleteItem);
     }
 
     var updateBudget = function () {
@@ -211,6 +214,26 @@ var appController = (function (budgetCtrl, UICtrl) {
 
             // 5. Calculate the updated budget
             updateBudget();
+        }
+    };
+
+    //delete Item
+    var ctrlDeleteItem = function(event) {
+        var itemId, splitId, type, ID;
+
+        itemId = event.target.parentNode.parentNode.parentNode.parentNode.id;
+
+        if(itemId) {
+            splitId = itemId.split('-');
+            type = splitId[0];
+            ID = splitId[1];
+
+            console.log(splitId);
+            // 1. Delete the item from the data structure
+
+            // 2. Delete the item from the UI
+
+            // 3. Update budget and show the update budgetUI
         }
     }
 
