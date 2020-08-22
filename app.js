@@ -1,11 +1,11 @@
 
 //BUDGET CONTROLLER
-var budgetController = (function() {
+var budgetController = (function () {
     // Some Code 
 })();
 
 //UI CONTROLLER
-var UIController = (function() {
+var UIController = (function () {
 
     var DOMStrings = {
         inputType: '.add__type',
@@ -15,14 +15,14 @@ var UIController = (function() {
     }
 
     return {
-        getInput: function() {
+        getInput: function () {
             return {
                 type: document.querySelector(DOMStrings.inputType).value,
                 description: document.querySelector(DOMStrings.inputDescription).value,
                 value: document.querySelector(DOMStrings.inputValue).value
             }
         },
-        getDomStrings: function() {
+        getDomStrings: function () {
             return DOMStrings;
         }
     }
@@ -31,15 +31,24 @@ var UIController = (function() {
 
 
 //GLOBAL APP CONTROLLER
-var appController = (function(budgetCtrl, UICtrl) {
+var appController = (function (budgetCtrl, UICtrl) {
 
-    var DOM = UICtrl.getDomStrings();
+    var setupEventListeners = function () {
+        var DOM = UICtrl.getDomStrings();
+
+        document.querySelector(DOM.inputBtn).addEventListener('click', ctrlEvent);
+
+        document.addEventListener('keypress', function (event) {
+            if (event.keyCode === 13 || event.which === 13) {
+                ctrlEvent();
+            }
+        });
+    }
 
     var ctrlEvent = function () {
-        
+
         // 1. Get Input Values
         var input = UICtrl.getInput();
-        console.log(input);
 
         // 2. Add the item to the budget controller
         // 3. Add the item to the UI
@@ -47,11 +56,12 @@ var appController = (function(budgetCtrl, UICtrl) {
         // 5. Display the budget on the UI
     }
 
-    document.querySelector(DOM.inputBtn).addEventListener('click', ctrlEvent);
-
-    document.addEventListener('keypress', function(event) {
-        if(event.keyCode === 13 || event.which === 13) {
-            ctrlEvent();
+    return {
+        init: function () {
+            console.log('Application has started!');
+            setupEventListeners();
         }
-    })
+    }
 })(budgetController, UIController);
+
+appController.init();
