@@ -164,6 +164,12 @@ var UIController = (function () {
         return (type === 'exp' ? '-' : '+') + ' ' + int + '.' + dec;
     };
 
+    var nodeListFoEach = function (list, callback) {
+        for (var i = 0; i < list.length; i++) {
+            callback(list[i], i);
+        }
+    }
+
     return {
         getInput: function () {
             return {
@@ -215,9 +221,9 @@ var UIController = (function () {
 
             obj.budget > 0 ? type = 'inc' : type = 'exp';
 
-            document.querySelector(DOMStrings.budgetLabel).textContent = formatNumber(obj.budget);
-            document.querySelector(DOMStrings.incomeLabel).textContent = formatNumber(obj.totalInc, type);
-            document.querySelector(DOMStrings.expensesLabel).textContent = formatNumber(obj.totalExp, type);
+            document.querySelector(DOMStrings.budgetLabel).textContent = formatNumber(obj.budget, type);
+            document.querySelector(DOMStrings.incomeLabel).textContent = formatNumber(obj.totalInc, 'inc');
+            document.querySelector(DOMStrings.expensesLabel).textContent = formatNumber(obj.totalExp, 'exp');
 
             if (obj.percentage > 0) {
                 document.querySelector(DOMStrings.percentageLabel).textContent = obj.percentage + '%';
@@ -227,12 +233,6 @@ var UIController = (function () {
         },
         displayPercentages: function (percentages) {
             var fields = document.querySelectorAll(DOMStrings.expensePercLabel);
-
-            var nodeListFoEach = function (list, callback) {
-                for (var i = 0; i < list.length; i++) {
-                    callback(list[i], i);
-                }
-            }
 
             nodeListFoEach(fields, function (current, index) {
                 if (percentages[index] > 0) {
@@ -253,6 +253,19 @@ var UIController = (function () {
 
             document.querySelector(DOMStrings.dateLabel).textContent = months[month] + ' ' + year;
 
+        },
+        changedType: function () {
+            var fields = document.querySelectorAll(
+                DOMStrings.inputType + ',' +
+                DOMStrings.inputDescription + ',' +
+                DOMStrings.inputValue
+            );
+
+            nodeListFoEach(fields, function (curr) {
+                curr.classList.toggle('red-focus');
+            });
+
+            document.querySelector(DOMStrings.inputBtn).classList.toggle('red');
         },
         getDomStrings: function () {
             return DOMStrings;
@@ -277,6 +290,8 @@ var appController = (function (budgetCtrl, UICtrl) {
         });
 
         document.querySelector(DOM.containerLabel).addEventListener('click', ctrlDeleteItem);
+
+        document.querySelector(DOM.inputType).addEventListener('change', UICtrl.changedType);
     }
 
     var updateBudget = function () {
