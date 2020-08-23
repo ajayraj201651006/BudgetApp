@@ -146,6 +146,23 @@ var UIController = (function () {
         expensePercLabel: '.item__percentage'
     }
 
+    var formatNumber = function(num, type) {
+        var numSplit, int, dec;
+            
+        num = Math.abs(num);
+        num = num.toFixed(2);
+        numSplit = num.split('.');
+
+        int = numSplit[0];
+        dec = numSplit[1];
+
+        if(int.length > 3) {
+            int = int.substr(0, int.length-3) + ',' + int.substr(int.length-3, int.length);
+        }
+
+        return (type === 'exp' ? '-' : '+') + ' ' + int + '.' + dec;
+    };
+
     return {
         getInput: function () {
             return {
@@ -169,7 +186,7 @@ var UIController = (function () {
             //replace placeholder text with actual values
             newHtml = html.replace('%d%', obj.id);
             newHtml = newHtml.replace('%description%', obj.description);
-            newHtml = newHtml.replace('%value%', obj.value);
+            newHtml = newHtml.replace('%value%', formatNumber(obj.value, type));
 
             //add list in the UI
             document.querySelector(element).insertAdjacentHTML('beforeend', newHtml);
@@ -193,9 +210,13 @@ var UIController = (function () {
             fieldsArr[0].focus();
         },
         displayBudget: function (obj) {
-            document.querySelector(DOMStrings.budgetLabel).textContent = obj.budget;
-            document.querySelector(DOMStrings.incomeLabel).textContent = obj.totalInc;
-            document.querySelector(DOMStrings.expensesLabel).textContent = obj.totalExp;
+            var type;
+
+            obj.budget > 0 ? type = 'inc' : type = 'exp';
+            
+            document.querySelector(DOMStrings.budgetLabel).textContent = formatNumber(obj.budget);
+            document.querySelector(DOMStrings.incomeLabel).textContent = formatNumber(obj.totalInc, type);
+            document.querySelector(DOMStrings.expensesLabel).textContent = formatNumber(obj.totalExp, type);
 
             if (obj.percentage > 0) {
                 document.querySelector(DOMStrings.percentageLabel).textContent = obj.percentage + '%';
